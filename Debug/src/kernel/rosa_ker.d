@@ -28,10 +28,10 @@ src/kernel/rosa_ker.d src/kernel/rosa_ker.o src/kernel/rosa_ker.o: \
  C:\Program\ Files\ (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT32UC3A0512/avr32/usart_400.h \
  C:\Program\ Files\ (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT32UC3A0512/avr32/usbb_311.h \
  C:\Program\ Files\ (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT32UC3A0512/avr32/wdt_231.h \
- ../src/include/drivers/debug.h ../src/include/kernel/rosa_ext.h \
- ../src/include/kernel/rosa_def.h ../src/include/kernel/rosa_ker.h \
- ../src/include/kernel/rosa_tim.h \
+ ../src/include/drivers/debug.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr32\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/stdint.h \
+ ../src/include/kernel/rosa_ext.h ../src/include/kernel/rosa_def.h \
+ ../src/include/kernel/rosa_ker.h ../src/include/kernel/rosa_tim.h \
  ../src/include/kernel/rosa_scheduler.h ../src/include/drivers/button.h \
  ../src/include/drivers/led.h ../src/include/drivers/pot.h \
  ../src/include/drivers/usart.h ../src/include/kernel/rosa_int.h
@@ -96,6 +96,8 @@ C:\Program\ Files\ (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT
 
 ../src/include/drivers/debug.h:
 
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr32\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/stdint.h:
+
 ../src/include/kernel/rosa_ext.h:
 
 ../src/include/kernel/rosa_def.h:
@@ -103,8 +105,6 @@ C:\Program\ Files\ (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT
 ../src/include/kernel/rosa_ker.h:
 
 ../src/include/kernel/rosa_tim.h:
-
-c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr32\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/stdint.h:
 
 ../src/include/kernel/rosa_scheduler.h:
 

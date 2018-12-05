@@ -44,7 +44,6 @@ void timerISR(void)
 	sr = tc->channel[0].sr;
 	if(sr & AVR32_TC_CPCS_MASK)
 	{
-		ticks ++;
 		ROSA_yieldFromISR();
 	}
 }

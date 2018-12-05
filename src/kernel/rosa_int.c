@@ -26,6 +26,7 @@
 
 #include "kernel/rosa_int.h"
 #include "kernel/rosa_scheduler.h"
+#include "kernel/rosa_tim.h"
 
 void contextSaveFromISR(void);
 void contextRestoreFromISR(void);
@@ -40,6 +41,7 @@ void contextRestoreFromISR(void);
 void ROSA_yieldFromISR(void)
 {
 	contextSaveFromISR();	  //Save the task context
+	ticks ++;
 	scheduler();			  //Find next task to execute
 	contextRestoreFromISR();  //...and switch over to it.
 }

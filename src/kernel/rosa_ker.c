@@ -146,3 +146,39 @@ void ROSA_tcbInstall(tcb * tcbTask)
 		tcbTask->nexttcb = TCBLIST;			//Make the list circular
 	}
 }
+
+int16_t ROSA_taskCreate(ROSA_taskHandle_t * th, char * id, void * taskFunc, uint32_t stackSize, uint8_t priority)
+{
+	int16_t result = -1;
+	
+	(*th) = (tcb*)malloc(sizeof(tcb));
+	int* dynamic_stack = (int*)calloc(stackSize, sizeof(int));
+		
+	ROSA_tcbCreate(*th, id, taskFunc, dynamic_stack, stackSize);
+	ROSA_tcbInstall(*th);
+	
+	return result;
+}
+
+int16_t ROSA_taskDelete(ROSA_taskHandle_t th)
+{
+	uint16_t result = -1;
+	tcb* prev;
+	
+	if( th )
+	{
+		prev = TCBLIST;
+		while( prev->nexttcb != th )
+		{
+			prev = prev->nexttcb;
+		}
+		prev->nexttcb = th->nexttcb;
+		
+		free(th->dataarea - th->datasize);
+		free(th);
+		
+		result = 0;
+	}
+	
+	return result;
+}

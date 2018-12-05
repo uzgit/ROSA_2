@@ -28,6 +28,7 @@
 #define _ROSA_KER_H_
 
 #include "rosa_def.h"
+#include <stdint.h>
 
 /***********************************************************
  * Global variables
@@ -68,6 +69,9 @@ void ROSA_tcbCreate(tcb * tcbTask, char tcbName[NAMESIZE], void *tcbFunction, in
 
 //Install a new task TCB into ROSA
 extern void ROSA_tcbInstall(tcb *task);
+
+int16_t ROSA_taskCreate(ROSA_taskHandle_t * th, char * id, void * taskFunc, uint32_t stackSize, uint8_t priority);
+int16_t ROSA_taskDelete(ROSA_taskHandle_t th);
 
 //Start running the ROSA kernel
 //This start running the created and installed tasks.
