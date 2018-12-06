@@ -25,6 +25,8 @@
 /* Tab size: 4 */
 
 #include "kernel/rosa_scheduler.h"
+#include "kernel/rosa_ker.h"
+#include "kernel/rosa_tim.h"
 
 /***********************************************************
  * scheduler
@@ -36,6 +38,24 @@
  **********************************************************/
 void scheduler(void)
 {
+	
+	tcb * iterator = SUSPENDEDLIST;
+	uint64_t current_time = ROSA_getTickCount();
+	while( iterator != NULL && iterator->back_online_time <= current_time ) //for every suspended task that is now ready
+	{
+		ROSA_tcbUnsuspend(iterator);
+		ROSA_tcbInstall(iterator);
+		if (SUSPENDEDLIST)
+		{
+			iterator = iterator->nexttcb;
+		}
+		else
+		{
+			iterator = NULL;
+		}
+	}
 	//Find the next task to execute
-	EXECTASK = EXECTASK->nexttcb;
+	//EXECTASK = EXECTASK->nexttcb;
+	EXECTASK=TCBLIST;
+	
 }

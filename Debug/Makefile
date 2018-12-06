@@ -48,6 +48,7 @@ SUBDIRS :=  \
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../src/kernel/lists.c \
 ../src/main.c \
 ../src/kernel/rosa_int.c \
 ../src/kernel/rosa_ker.c \
@@ -64,6 +65,7 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+src/kernel/lists.o \
 src/main.o \
 src/kernel/rosa_int.o \
 src/kernel/rosa_int_asm.o \
@@ -73,6 +75,7 @@ src/kernel/rosa_scheduler.o \
 src/kernel/rosa_tim.o
 
 OBJS_AS_ARGS +=  \
+src/kernel/lists.o \
 src/main.o \
 src/kernel/rosa_int.o \
 src/kernel/rosa_int_asm.o \
@@ -82,6 +85,7 @@ src/kernel/rosa_scheduler.o \
 src/kernel/rosa_tim.o
 
 C_DEPS +=  \
+src/kernel/lists.d \
 src/main.d \
 src/kernel/rosa_int.d \
 src/kernel/rosa_int_asm.d \
@@ -91,6 +95,7 @@ src/kernel/rosa_scheduler.d \
 src/kernel/rosa_tim.d
 
 C_DEPS_AS_ARGS +=  \
+src/kernel/lists.d \
 src/main.d \
 src/kernel/rosa_int.d \
 src/kernel/rosa_int_asm.d \
@@ -114,59 +119,64 @@ LINKER_SCRIPT_DEP+=  \
 
 
 # AVR32/GNU C Compiler
-src/main.o: ../src/main.c
+
+
+
+
+
+
+
+
+
+
+
+
+
+src/kernel/%.o: ../src/kernel/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr32\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -I"../src" -I"../src/include" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT32UC3A0512"  -O0 -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3a0512 -c -c -fmessage-length=0 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
-src/kernel/rosa_int.o: ../src/kernel/rosa_int.c
+src/%.o: ../src/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr32\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -I"../src" -I"../src/include" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT32UC3A0512"  -O0 -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3a0512 -c -c -fmessage-length=0 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
-
-src/kernel/rosa_ker.o: ../src/kernel/rosa_ker.c
-	@echo Building file: $<
-	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr32\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -I"../src" -I"../src/include" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT32UC3A0512"  -O0 -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3a0512 -c -c -fmessage-length=0 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
-	@echo Finished building: $<
-	
-
-src/kernel/rosa_scheduler.o: ../src/kernel/rosa_scheduler.c
-	@echo Building file: $<
-	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr32\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -I"../src" -I"../src/include" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT32UC3A0512"  -O0 -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3a0512 -c -c -fmessage-length=0 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
-	@echo Finished building: $<
-	
-
-src/kernel/rosa_tim.o: ../src/kernel/rosa_tim.c
-	@echo Building file: $<
-	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr32\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -I"../src" -I"../src/include" -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT32UC3A0512"  -O0 -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3a0512 -c -c -fmessage-length=0 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
-	@echo Finished building: $<
-	
-
 
 
 
 # AVR32/GNU Preprocessing Assembler
-src/kernel/rosa_int_asm.o: ../src/kernel/rosa_int_asm.S
+
+src/kernel/%.o: ../src/kernel/%.S
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU Preprocessing Assembler : 4.4.7
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr32\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3a0512 -I "../src" -I "../src/include" -I "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT32UC3A0512"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
-src/kernel/rosa_ker_asm.o: ../src/kernel/rosa_ker_asm.S
+src/kernel/%.o: ../src/kernel/%.x
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU Preprocessing Assembler : 4.4.7
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr32\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3a0512 -I "../src" -I "../src/include" -I "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT32UC3A0512"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
+src/kernel/%.o: ../src/kernel/%.X
+	@echo Building file: $<
+	@echo Invoking: AVR32/GNU Preprocessing Assembler : 4.4.7
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr32\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3a0512 -I "../src" -I "../src/include" -I "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT32UC3A0512"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+src/kernel/%.o: ../src/kernel/%.sx
+	@echo Building file: $<
+	@echo Invoking: AVR32/GNU Preprocessing Assembler : 4.4.7
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr32\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3a0512 -I "../src" -I "../src/include" -I "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3A_DFP\1.0.53\include\AT32UC3A0512"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
+	@echo Finished building: $<
+	
 
 
 

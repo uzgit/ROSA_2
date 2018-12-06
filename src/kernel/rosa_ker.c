@@ -45,6 +45,12 @@
  * 	have been installed into the kernel with ROSA_tcbInstall()
  **********************************************************/
 tcb * TCBLIST;
+tcb * TCBLIST_end;
+
+tcb * SUSPENDEDLIST;
+tcb * SUSPENDEDLIST_end;
+
+//linked_list * ready_list;
 
 /***********************************************************
  * EXECTASK
@@ -77,8 +83,8 @@ void ROSA_init(void)
 	//Initialize the timer to 100 ms period.
 	//...
 	interruptInit();
-	ticks = 0;
-	timerInit(100);
+	system_ticks = 0;
+	timerInit(5);
 	timerStart();
 	//...
 }
@@ -127,32 +133,162 @@ void ROSA_tcbCreate(tcb * tcbTask, char tcbName[NAMESIZE], void *tcbFunction, in
  * 	Install the TCB into the TCBLIST.
  *
  **********************************************************/
+
+//void ROSA_tcbInstall(tcb * tcbTask)
+//{
+	//
+	//tcb * tcbTmp;
+//
+	//// Is this the first tcb installed? 
+	//if(TCBLIST == NULL) {
+		//TCBLIST = tcbTask;
+		//TCBLIST->nexttcb = tcbTask;			//Install the first tcb
+		//tcbTask->nexttcb = TCBLIST;			//Make the list circular
+	//}
+	//else {
+		//tcbTmp = TCBLIST;					//Find last tcb in the list
+		//while(tcbTmp->nexttcb != TCBLIST) {
+			//tcbTmp = tcbTmp->nexttcb;
+		//}
+		//tcbTmp->nexttcb = tcbTask;			//Install tcb last in the list
+		//tcbTask->nexttcb = TCBLIST;			//Make the list circular
+	//}
+//}
+
+// insert into the ready list
 void ROSA_tcbInstall(tcb * tcbTask)
 {
-	tcb * tcbTmp;
-
-	/* Is this the first tcb installed? */
-	if(TCBLIST == NULL) {
+	// check if tcbTask is null is missing
+	if(TCBLIST == NULL)
+	{
 		TCBLIST = tcbTask;
-		TCBLIST->nexttcb = tcbTask;			//Install the first tcb
-		tcbTask->nexttcb = TCBLIST;			//Make the list circular
+		tcbTask->nexttcb = tcbTask;
+		tcbTask->prevtcb = tcbTask;
+		TCBLIST_end = tcbTask;
 	}
-	else {
-		tcbTmp = TCBLIST;					//Find last tcb in the list
-		while(tcbTmp->nexttcb != TCBLIST) {
-			tcbTmp = tcbTmp->nexttcb;
-		}
-		tcbTmp->nexttcb = tcbTask;			//Install tcb last in the list
-		tcbTask->nexttcb = TCBLIST;			//Make the list circular
+	else if(tcbTask->effective_priority < TCBLIST->effective_priority)
+	{
+		insert_after(TCBLIST_end, tcbTask);
+		TCBLIST = tcbTask;
+	}
+	else
+	{
+		insert_by_priority(TCBLIST, tcbTask);
+		if(TCBLIST->prevtcb == tcbTask)
+		{
+			TCBLIST_end = tcbTask;
+		}		
 	}
 }
+
+// removes a tcb from the ready list
+void ROSA_tcbUninstall(tcb * tcbTask)
+{
+	// if empty OR if only one element
+	if(TCBLIST == TCBLIST_end)
+	{
+		TCBLIST = NULL;
+		TCBLIST_end = NULL;
+	}
+	else 
+	{
+		if(TCBLIST_end == tcbTask)
+		{
+			TCBLIST_end = tcbTask->prevtcb;
+		}
+		else if(TCBLIST == tcbTask)
+		{
+			TCBLIST = tcbTask->nexttcb;
+		}
+	
+		tcbTask->prevtcb->nexttcb = tcbTask->nexttcb;
+		tcbTask->nexttcb->prevtcb = tcbTask->prevtcb;
+	
+		tcbTask->nexttcb = NULL;
+		tcbTask->prevtcb = NULL;
+	}
+}
+
+void ROSA_tcbSuspend(tcb * tcbTask)
+{
+	// check if tcbTask is null is missing
+	if(SUSPENDEDLIST == NULL)
+	{
+		SUSPENDEDLIST = tcbTask;
+		tcbTask->nexttcb = tcbTask;
+		tcbTask->prevtcb = tcbTask;
+		SUSPENDEDLIST_end = tcbTask;
+	}
+	else if(tcbTask->back_online_time < SUSPENDEDLIST->back_online_time)
+	{
+		insert_after(SUSPENDEDLIST_end, tcbTask);
+		SUSPENDEDLIST = tcbTask;
+	}
+	else
+	{
+		insert_by_back_online_time(SUSPENDEDLIST, tcbTask);
+		if(SUSPENDEDLIST->prevtcb == tcbTask)
+		{
+			SUSPENDEDLIST_end = tcbTask;
+		}
+	}
+}
+
+void ROSA_tcbUnsuspend(tcb * tcbTask)
+{
+	// if empty OR if only one element
+	if(SUSPENDEDLIST == SUSPENDEDLIST_end)
+	{
+		SUSPENDEDLIST = NULL;
+		SUSPENDEDLIST_end = NULL;
+	}
+	else
+	{
+		if(SUSPENDEDLIST_end == tcbTask)
+		{
+			SUSPENDEDLIST_end = tcbTask->prevtcb;
+		}
+		else if(SUSPENDEDLIST == tcbTask)
+		{
+			SUSPENDEDLIST = tcbTask->nexttcb;
+		}
+	
+		tcbTask->prevtcb->nexttcb = tcbTask->nexttcb;
+		tcbTask->nexttcb->prevtcb = tcbTask->prevtcb;
+	
+		tcbTask->nexttcb = NULL;
+		tcbTask->prevtcb = NULL;
+	}
+}
+
+//void ROSA_tcbInstall(tcb * tcbTask)
+//{
+	//// working tcbinstall
+	//// check if tcbTask is null is missing
+	//if(TCBLIST == NULL)
+	//{
+		//TCBLIST = tcbTask;
+		//tcbTask->nexttcb = tcbTask;
+		//tcbTask->prevtcb = tcbTask;
+		//TCBLIST_end = tcbTask;
+	//}
+	//else
+	//{
+		//insert_after(TCBLIST_end, tcbTask);
+		//TCBLIST = tcbTask;
+	//}
+//}
 
 int16_t ROSA_taskCreate(ROSA_taskHandle_t * th, char * id, void * taskFunc, uint32_t stackSize, uint8_t priority)
 {
 	int16_t result = -1;
 	
-	(*th) = (tcb*)malloc(sizeof(tcb));
+	(*th) = (tcb*)calloc(1,sizeof(tcb));
 	int* dynamic_stack = (int*)calloc(stackSize, sizeof(int));
+	(*th)->priority = priority;
+	(*th)->effective_priority = priority;
+	(*th)->status = 1;
+	(*th)->back_online_time = 0;
 		
 	ROSA_tcbCreate(*th, id, taskFunc, dynamic_stack, stackSize);
 	ROSA_tcbInstall(*th);
@@ -163,16 +299,33 @@ int16_t ROSA_taskCreate(ROSA_taskHandle_t * th, char * id, void * taskFunc, uint
 int16_t ROSA_taskDelete(ROSA_taskHandle_t th)
 {
 	uint16_t result = -1;
-	tcb* prev;
-	
+		
 	if( th )
 	{
-		prev = TCBLIST;
-		while( prev->nexttcb != th )
+		//prev = TCBLIST;
+		//while( prev->nexttcb != th )
+		//{
+			//prev = prev->nexttcb;
+		//}
+		//prev->nexttcb = th->nexttcb;
+		
+		//if(TCBLIST_end == TCBLIST)
+		//{
+			//TCBLIST_end = NULL;
+			//TCBLIST_end = NULL;
+		//}
+		
+		if(TCBLIST_end == th)
 		{
-			prev = prev->nexttcb;
+			TCBLIST_end = th->prevtcb;
 		}
-		prev->nexttcb = th->nexttcb;
+		if(TCBLIST == th)
+		{
+			TCBLIST = th->nexttcb;
+		}
+		
+		th->prevtcb->nexttcb = th->nexttcb;
+		th->nexttcb->prevtcb = th->prevtcb;
 		
 		free(th->dataarea - th->datasize);
 		free(th);
@@ -181,4 +334,47 @@ int16_t ROSA_taskDelete(ROSA_taskHandle_t th)
 	}
 	
 	return result;
+}
+
+
+int16_t ROSA_delay(uint64_t ticks)
+{
+	//remove_tcb(EXECTASK);
+	//EXECTASK->back_online_time=ROSA_getTickCount()+ticks;
+	//insert_by_back_online_time(suspended_list, EXECTASK);
+	interruptDisable();
+	ROSA_tcbUninstall(EXECTASK);
+	EXECTASK->back_online_time=ROSA_getTickCount()+ticks;
+	ROSA_tcbSuspend(EXECTASK);
+	interruptEnable();
+	ROSA_yield();
+}
+
+int16_t ROSA_delayUntil(uint64_t* lastWakeTime, uint64_t ticks)
+{
+	//remove_tcb(EXECTASK);
+	//EXECTASK->back_online_time=lastWakeTime+ticks;
+	//*lastWakeTime=*lastWakeTime+ticks;
+	//insert_by_back_online_time(suspended_list, EXECTASK);
+	interruptDisable();
+	ROSA_tcbUninstall(EXECTASK);
+	//EXECTASK->back_online_time=*lastWakeTime+ticks;
+	//*lastWakeTime=*lastWakeTime+ticks;
+	EXECTASK->back_online_time=ROSA_getTickCount()+ticks;
+	ROSA_tcbSuspend(EXECTASK);
+	interruptEnable();
+	ROSA_yield();
+}
+
+int16_t ROSA_delayAbsolute(uint64_t ticks)
+{
+	//remove_tcb(EXECTASK);
+	//EXECTASK->back_online_time=ticks;
+	//insert_by_back_online_time(suspended_list, EXECTASK);
+	interruptDisable();
+	ROSA_tcbUninstall(EXECTASK);
+	EXECTASK->back_online_time=ticks;
+	ROSA_tcbSuspend(EXECTASK);
+	interruptEnable();
+	ROSA_yield();
 }

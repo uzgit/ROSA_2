@@ -30,7 +30,7 @@
 #include <avr32/io.h>
 #include <stdint.h>
 
-int64_t ticks;
+int64_t system_ticks;
 
 /***********************************************************
  * Kernel timer functions
@@ -39,7 +39,7 @@ extern void timerInit(unsigned int);
 extern void timerReset(void);
 extern void timerStart(void);
 extern void timerStop(void);
-int64_t getTicks(void);
+int64_t ROSA_getTickCount(void);
 
 //The timer interrupt service routine
 void timerISR(void);

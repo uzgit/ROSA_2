@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+src\kernel\lists.c
+
 src\main.c
 
 src\kernel\rosa_int.c

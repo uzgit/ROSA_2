@@ -33,8 +33,13 @@
 /***********************************************************
  * Global variables
  ***********************************************************/
-extern tcb * TCBLIST;
+//extern tcb * TCBLIST;
 extern tcb * EXECTASK;
+tcb * TCBLIST;
+tcb * TCBLIST_end;
+
+tcb * SUSPENDEDLIST;
+tcb * SUSPENDEDLIST_end;
 
 
 /***********************************************************
@@ -68,10 +73,19 @@ void ROSA_init(void);
 void ROSA_tcbCreate(tcb * tcbTask, char tcbName[NAMESIZE], void *tcbFunction, int * tcbStack, int tcbStackSize);
 
 //Install a new task TCB into ROSA
-extern void ROSA_tcbInstall(tcb *task);
+extern void ROSA_tcbInstall(tcb * tcbTask); //used to be 'task' instead of 'tcbTask'
+void ROSA_tcbUninstall(tcb * tcbTask);
+
+void ROSA_tcbSuspend(tcb * tcbTask);
+void ROSA_tcbUnsuspend(tcb * tcbTask);
 
 int16_t ROSA_taskCreate(ROSA_taskHandle_t * th, char * id, void * taskFunc, uint32_t stackSize, uint8_t priority);
 int16_t ROSA_taskDelete(ROSA_taskHandle_t th);
+
+//delay functions
+int16_t ROSA_delay(uint64_t ticks);
+int16_t ROSA_delayUntil(uint64_t* lastWakeTime, uint64_t ticks);
+int16_t ROSA_delayAbsolute(uint64_t ticks);
 
 //Start running the ROSA kernel
 //This start running the created and installed tasks.

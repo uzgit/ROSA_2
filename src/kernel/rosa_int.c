@@ -40,8 +40,10 @@ void contextRestoreFromISR(void);
  **********************************************************/
 void ROSA_yieldFromISR(void)
 {
+	interruptDisable();
 	contextSaveFromISR();	  //Save the task context
-	ticks ++;
+	system_ticks ++;
 	scheduler();			  //Find next task to execute
 	contextRestoreFromISR();  //...and switch over to it.
+	interruptEnable();
 }

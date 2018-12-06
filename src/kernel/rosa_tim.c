@@ -76,7 +76,7 @@ int timerPeriodSet(unsigned int ms)
  * 	returns the current number of system ticks since start.
  *
  **********************************************************/
-int64_t getTicks(void)
+int64_t ROSA_getTickCount(void)
 {
-	return ticks;
+	return system_ticks;
 }
